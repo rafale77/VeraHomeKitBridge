@@ -9,7 +9,7 @@ sudo apt-get install -y nodejs build-essential libavahi-compat-libdnssd-dev git
 Next, run the following lines to install the bridge
 
 ```
-git clone --recursive https://github.com/Hackworth/VeraHomeKitBridge.git
+git clone --recursive https://github.com/rafale77/VeraHomeKitBridge.git
 cd VeraHomeKitBridge
 npm install
 cd lib/HAP-NodeJS
