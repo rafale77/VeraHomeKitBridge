@@ -32,7 +32,7 @@ function getVeraDevices(veraIP) {
               Error(error);
             } else {
               processDevices(body.devices);
-              processScenes(body.scenes);
+//              processScenes(body.scenes);
               accessory_Loader.loadDirectory(__dirname+"/accessories");
               portfinder.getPort({host: '127.0.0.1'},function (err,port) {
                 bridge.publish({
@@ -78,9 +78,9 @@ function processDevices(devices) {
           createLock(device);
         }
       break;
-      case 8: // CATEGORY #2 - Window Covering (They act just like a dimmable light):
-        createDimmableLight(device);
-      break;
+//      case 8: // CATEGORY #2 - Window Covering (They act just like a dimmable light):
+//        createDimmableLight(device);
+//      break;
     }
   });
 }
