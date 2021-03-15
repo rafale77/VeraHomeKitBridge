@@ -45,8 +45,8 @@ GarageDoor.prototype = {
 
     request.get({ url: "http://" + self.veraIP + ":3480/data_request?id=finddevice&devnum=" + self.device.id },
                 function (error, response, body) {
-                  self.urn = CorrectUrn(body);
-                  self.binaryState = CorrectState(newState, self.urn);
+                  self.urn = "urn:upnp-org:serviceId:SwitchPower1";//CorrectUrn(body);
+                  self.binaryState = newState ? 0 : 1; //CorrectState(newState, self.urn);
                   request.get({url: "http://" + self.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + self.device.id + "&serviceId=" + self.urn + "&action=SetTarget&newTargetValue=" + self.binaryState},
                               function(err, response, body) {
                                 if (!err && response.statusCode == 200) {
@@ -71,12 +71,12 @@ GarageDoor.prototype = {
 
     request.get({ url: "http://" + self.veraIP + ":3480/data_request?id=finddevice&devnum=" + self.device.id },
                 function (error, response, body) {
-                  self.urn = CorrectUrn(body);
+                  self.urn = "urn:upnp-org:serviceId:SwitchPower1";//CorrectUrn(body);
                   request.get({url: "http://" + self.veraIP + ":3480/data_request?id=variableget&output_format=xml&DeviceNum=" + self.device.id + "&serviceId=" + self.urn + "&Variable=Status"},
                     function(err, response, body) {
                       if (!err && response.statusCode == 200) {
 
-                        var open = CorrectState(parseInt(body), self.urn);
+                        var open = parseInt(body) ? 0 : 1;//CorrectState(parseInt(body), self.urn);
 
                         if (open) {
                           console.log("The " + self.device.name + " is open");
