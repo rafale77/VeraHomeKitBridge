@@ -23,7 +23,7 @@ Lock.prototype = {
 		var self = this;
 
 		request.get({url: "http://" + this.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:micasaverde-com:serviceId:DoorLock1&action=SetTarget&newTargetValue=" + binaryState},
-			
+
                function(err, response, body) {
 			if (!err && response.statusCode == 200) {
 				if (locked) {
@@ -41,9 +41,9 @@ Lock.prototype = {
     onLockStateRead: function(callback) {
 
         console.log("Reading status on " + this.device.name);
-        
+
         var self = this;
-        
+
         request.get({url: "http://" + this.veraIP + ":3480/data_request?id=variableget&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:micasaverde-com:serviceId:DoorLock1&Variable=Status"},
             function(err, response, body) {
                 if (!err && response.statusCode == 200) {
@@ -141,7 +141,8 @@ Lock.prototype = {
         designedMaxLength: 255
      },{
         cType: types.CURRENT_LOCK_MECHANISM_STATE_CTYPE,
-        onUpdate: function(value) { that.onSetUnlocked(value); },
+        onUpdate: function(value) { execute("Lock", "Current State", value); },
+        //onUpdate: function(value) { that.onSetUnlocked(value); },
         onRead: function(callback) { that.onLockStateRead(callback); },
         perms: ["pr","ev"],
         format: "int",
