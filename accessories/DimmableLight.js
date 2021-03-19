@@ -193,7 +193,7 @@ DimmableLight.prototype = {
         designedMaxLength: 1
       }]
     },{
-      sType: types.SWITCH_STYPE,
+      sType: types.LIGHTBULB_STYPE,
       characteristics: [{
         cType: types.NAME_CTYPE,
         onUpdate: null,
