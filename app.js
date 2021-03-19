@@ -79,7 +79,7 @@ function processDevices(devices) {
         }
       break;
       case 8: // CATEGORY #2 - Window Covering (They act just like a dimmable light):
-        createDimmableLight(device);
+        createWindowCovering(device);
       break;
       case 32: // CATEGORY #32 - Garage Door
         createGarageDoor(device);
@@ -103,6 +103,12 @@ function createDimmableLight(device) {
 function createLight(device) {
   var Light = require("./accessories/Light.js");
   var accessory = new Light.initializeWithDevice(_veraIP, device);
+  createHomeKitAccessory(accessory);
+}
+
+function createWindowCovering(device) {
+  var WindowCovering = require("./accessories/WindowCovering.js");
+  var accessory = new WindowCovering.initializeWithDevice(_veraIP, device);
   createHomeKitAccessory(accessory);
 }
 
