@@ -26,7 +26,7 @@ DimmableLight.prototype = {
 		}
 
 		console.log("Setting the " + this.device.name + " brightness to " + brightness + "%");
-        var result = brightness
+        var result = brightness;
 
 		var self = this;
 		request.get({url: "http://" + this.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:upnp-org:serviceId:Dimming1&action=SetLoadLevelTarget&newLoadlevelTarget=" + brightness},
@@ -108,7 +108,7 @@ DimmableLight.prototype = {
             function(err, response, body) {
                 if (!err && response.statusCode == 200) {
 
-                    console.log("Dimmer Light body :"+body);
+                    //console.log("Dimmer Light body :"+body);
 
                     var powerOn = parseInt(body) == 1;
 
@@ -204,23 +204,23 @@ DimmableLight.prototype = {
         supportBonjour: false,
         manfDescription: "Name of service",
         designedMaxLength: 255
-      },
-      {
-    	cType: types.BRIGHTNESS_CTYPE,
-    	onUpdate: function(value) { that.onSetBrightness(value); },
+      	},
+      	{
+    		cType: types.BRIGHTNESS_CTYPE,
+    		onUpdate: function(value) { that.onSetBrightness(value); },
         onRead: function(callback) { that.onGetBrightness(callback); },
-    	perms: ["pw","pr","ev"],
-		format: "int",
-		initialValue: 0,
-		supportEvents: false,
-		supportBonjour: false,
-		manfDescription: "Adjust the brightness",
-		designedMinValue: 0,
-		designedMaxValue: 100,
-		designedMinStep: 1,
-		unit: "%"
-    },
-      {
+    		perms: ["pw","pr","ev"],
+				format: "int",
+				initialValue: 0,
+				supportEvents: false,
+				supportBonjour: false,
+				manfDescription: "Adjust the brightness",
+				designedMinValue: 0,
+				designedMaxValue: 100,
+				designedMinStep: 1,
+				unit: "%"
+    		},
+      	{
         cType: types.POWER_STATE_CTYPE,
         onUpdate: function(value) { that.onSetPowerState(value); },
         onRead: function(callback) { that.onGetPowerState(callback); },
@@ -231,7 +231,7 @@ DimmableLight.prototype = {
         supportBonjour: false,
         manfDescription: "Change the power state",
         designedMaxLength: 1
-      }]
+      	}]
     }];
   }
 };
