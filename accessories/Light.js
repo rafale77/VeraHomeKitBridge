@@ -148,7 +148,7 @@ Light.prototype = {
       {
         cType: types.POWER_STATE_CTYPE,
         onUpdate: function(value) { that.onSetPowerState(value); },
-		onRead: function(callback) { that.onGetPowerState(callback); },
+		    onRead: function(callback) { that.onGetPowerState(callback); },
         perms: ["pw","pr","ev"],
         format: "bool",
         initialValue: false,
