@@ -1,8 +1,8 @@
 var types = require("../lib/HAP-NodeJS/accessories/types.js");
 var request = require("request");
 
-var settingBrightness = false;
-var nextBrightnessLevel = null;
+var settingOpening = false;
+var nextOpeningLevel = null;
 
 function WindowCovering(veraIP, device) {
 	this.device = device;
@@ -13,34 +13,34 @@ function WindowCovering(veraIP, device) {
 WindowCovering.prototype = {
 
 	/**
-	 *  This method is called when the brightness level changes
+	 *  This method is called when the opening level changes
 	 */
-	onSetBrightness: function(brightness) {
+	onSetOpening: function(opening) {
 
-		if (settingBrightness) {
-			nextBrightnessLevel = brightness;
+		if (settingOpening) {
+			nextOpeningLevel = opening;
 			return;
 		} else {
-			settingBrightness = true;
+			settingOpening = true;
 
 		}
 
-		console.log("Setting the " + this.device.name + " brightness to " + brightness + "%");
-        var result = brightness
+		console.log("Setting the " + this.device.name + " opening to " + opening + "%");
+        var result = opening;
 
 		var self = this;
-		request.get({url: "http://" + this.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:upnp-org:serviceId:Dimming1&action=SetLoadLevelTarget&newLoadlevelTarget=" + brightness},
+		request.get({url: "http://" + this.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:upnp-org:serviceId:Dimming1&action=SetLoadLevelTarget&newLoadlevelTarget=" + opening},
 			function(err, response, body) {
 				if (!err && response.statusCode == 200) {
-					console.log("The " + self.device.name + " brightness has been changed to " + result + "%");
+					console.log("The " + self.device.name + " opening has been changed to " + result + "%");
 				} else {
-					console.log("Error '" + err + "' changing the " + self.device.name + " brightness:  " + body);
+					console.log("Error '" + err + "' changing the " + self.device.name + " opening:  " + body);
 				}
-				settingBrightness = false;
-				if (nextBrightnessLevel) {
-					var brightness = nextBrightnessLevel;
-					nextBrightnessLevel = null;
-					self.onSetBrightness(brightness);
+				settingOpening = false;
+				if (nextOpeningLevel) {
+					var opening = nextOpeningLevel;
+					nextOpeningLevel = null;
+					self.onSetOpening(opening);
 				}
 			}
 		);
@@ -50,7 +50,7 @@ WindowCovering.prototype = {
     /**
      *  This method is called when the Window is to be read
      */
-    onGetBrightness: function(callback) {
+    onGetOpening: function(callback) {
 
         var self = this;
 
@@ -58,69 +58,11 @@ WindowCovering.prototype = {
             function(err, response, body) {
                 if (!err && response.statusCode == 200) {
 
-                    console.log("The " + self.device.name + " brightness is at " + body + "%");
+                    console.log("The " + self.device.name + " opening is at " + body + "%");
 
                     callback(parseFloat(body));
                 } else {
-                    console.log("Error '" + err + "' reading the " + self.device.name + " brightness:  " + body);
-                }
-            }
-        );
-    },
-
-	/**
-	 *  This method is called when the Window is turned on or off
-	 */
-	onSetPowerState: function(powerOn) {
-
-		if (powerOn) {
-			console.log("Opening the " + this.device.name);
-		} else {
-			console.log("Closing the " + this.device.name);
-		}
-
-		var binaryState = powerOn ? 1 : 0;
-		var self = this;
-		request.get({url: "http://" + this.veraIP + ":3480/data_request?id=lu_action&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=" + binaryState},
-			function(err, response, body) {
-				if (!err && response.statusCode == 200) {
-					if (powerOn) {
-						console.log("The " + self.device.name + " has been open");
-					} else {
-						console.log("The " + self.device.name + " has been closed");
-					}
-				} else {
-					console.log("Error '" + err + "' turning the " + self.device.name + " on/off:  " + body);
-				}
-			}
-		);
-	},
-
-    /**
-     *  This method is called when the Window is to be read
-     */
-    onGetPowerState: function(callback) {
-
-        console.log("Reading status on " + this.device.name);
-        var self = this;
-
-        request.get({url: "http://" + this.veraIP + ":3480/data_request?id=variableget&output_format=xml&DeviceNum=" + this.device.id + "&serviceId=urn:upnp-org:serviceId:SwitchPower1&Variable=Status"},
-            function(err, response, body) {
-                if (!err && response.statusCode == 200) {
-
-                    console.log("Window Covering body :"+body);
-
-                    var powerOn = parseInt(body) == 1;
-
-                    if (powerOn) {
-                        console.log("The " + self.device.name + " has been opened");
-                    } else {
-                        console.log("The " + self.device.name + " has been closed");
-                    }
-
-                    callback(powerOn ? 1 : 0);
-                } else {
-                    console.log("Error '" + err + "' reading " + self.device.name + " on/off:  " + body);
+                    console.log("Error '" + err + "' reading the " + self.device.name + " opening:  " + body);
                 }
             }
         );
@@ -206,35 +148,48 @@ WindowCovering.prototype = {
         designedMaxLength: 255
       },
       {
-    	cType: types.WINDOW_COVERING_TARGET_POSITION_CTYPE,
-    	onUpdate: function(value) { that.onSetBrightness(value); },
-    	perms: ["pw","pr","ev"],
-		format: "int",
-		initialValue: 0,
-		supportEvents: false,
-		supportBonjour: false,
-		manfDescription: "Adjust the opening",
-		designedMinValue: 0,
-		designedMaxValue: 100,
-		designedMinStep: 1,
-		unit: "%"
-    },
-    {
-    cType: types.WINDOW_COVERING_CURRENT_POSITION_CTYPE,
-    onRead: function(callback) { that.onGetBrightness(callback); },
-    onUpdate: function(value) { execute("Window Covering", "Current State", value); },
-    //onUpdate: function(value) { that.onSetBrightness(value); },
-    perms: ["pr","ev"],
-  format: "int",
-  initialValue: 0,
-  supportEvents: false,
-  supportBonjour: false,
-  manfDescription: "Adjust the opening",
-  designedMinValue: 0,
-  designedMaxValue: 100,
-  designedMinStep: 1,
-  unit: "%"
-  }]
+    		cType: types.WINDOW_COVERING_TARGET_POSITION_CTYPE,
+    		onUpdate: function(value) { that.onSetOpening(value); },
+    		perms: ["pw","pr","ev"],
+				format: "UINT8",
+				initialValue: 0,
+				supportEvents: false,
+				supportBonjour: false,
+				manfDescription: "Adjust the opening",
+				designedMinValue: 0,
+				designedMaxValue: 100,
+				designedMinStep: 10,
+				unit: "%"
+    	},
+    	{
+    		cType: types.WINDOW_COVERING_CURRENT_POSITION_CTYPE,
+    		onRead: function(callback) { that.onGetOpening(callback); },
+    		//onUpdate: function(value) { execute("Window Covering", "Current Position", value); },
+    		onUpdate: function(value) { that.onSetOpening(value); },
+    		perms: ["pr","ev"],
+    		format: "UINT8",
+    		initialValue: 0,
+    		supportEvents: false,
+    		supportBonjour: false,
+    		manfDescription: "Opening Position",
+    		designedMinValue: 0,
+    		designedMaxValue: 100,
+    		designedMinStep: 1,
+    		unit: "%"
+			},{
+				cType: types.WINDOW_COVERING_OPERATION_STATE_CTYPE,
+				onUpdate: null,
+				onRead: null, //function(callback) { that.onGetOpening(callback); },
+				perms: ["pr", "ev"],
+				format: "int",
+				initialValue: 0,
+				supportEvents: false,
+				supportBonjour: false,
+				manfDescription: "Window cover operation state",
+				designedMinValue: 0,
+				designedMaxValue: 2,
+				designedMinStep: 1
+			}]
     }];
   }
 };
