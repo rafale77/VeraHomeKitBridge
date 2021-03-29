@@ -29,7 +29,7 @@ Lock.prototype = {
 				if (locked) {
 				console.log("The " + self.device.name + " has been locked");
 				} else {
-                        	console.log("The " + self.device.name + " has been unlocked")
+                        	console.log("The " + self.device.name + " has been unlocked");
 				}
 				} else {
 				console.log("Error '" + err + "' locking/unlocking the " + self.device.name + ":  " + body);
@@ -48,7 +48,11 @@ Lock.prototype = {
             function(err, response, body) {
                 if (!err && response.statusCode == 200) {
                     var locked = parseInt(body) == 1;
-                    console.log("Read: Door is currently "+ locked ? "locked." : "unlocked.");
+                    if (locked) {
+                      console.log("The " + self.device.name + " is currently open");
+                    } else {
+                      console.log("The " + self.device.name + " is currently closed");
+                    }
                     callback(locked);
                 } else {
                     console.log("Error '" + err + "' turning the " + self.device.name + " on/off:  " + body);
@@ -141,15 +145,15 @@ Lock.prototype = {
         designedMaxLength: 255
      },{
         cType: types.CURRENT_LOCK_MECHANISM_STATE_CTYPE,
-        onUpdate: function(value) { execute("Lock", "Current State", value); },
+        //onUpdate: function(value) { execute("Lock", "Current State", value); },
         //onUpdate: function(value) { that.onSetUnlocked(value); },
         onRead: function(callback) { that.onLockStateRead(callback); },
         perms: ["pr","ev"],
         format: "int",
-        initialValue: 0,
+        initialValue: 1,
         supportEvents: false,
         supportBonjour: false,
-        manfDescription: "BlaBla",
+        manfDescription: "Lock State",
         designedMinValue: 0,
         designedMaxValue: 4,
         designedMinStep: 1,
@@ -159,25 +163,25 @@ Lock.prototype = {
         onUpdate: function(value) { that.onSetUnlocked(value); },
         perms: ["pr","pw","ev"],
         format: "int",
-        initialValue: 0,
+        initialValue: 1,
         supportEvents: false,
         supportBonjour: false,
-        manfDescription: "BlaBla",
+        manfDescription: "Lock Target",
         designedMinValue: 0,
         designedMaxValue: 1,
         designedMinStep: 1,
         designedMaxLength: 1
       },{
-    	cType: types.VERSION_CTYPE,
-    	onUpdate: function(value) { console.log("Change:",value); },
-    	perms: ["pr"],
-	format: "string",
-	initialValue: "1.0",
-	supportEvents: false,
-	supportBonjour: false,
-	manfDescription: "BlaBla",
-	designedMaxLength: 255
-    }]
+    	  cType: types.VERSION_CTYPE,
+    	  onUpdate: function(value) { console.log("Change:",value); },
+    	  perms: ["pr"],
+	      format: "string",
+	      initialValue: "1.0",
+	      supportEvents: false,
+	      supportBonjour: false,
+	      manfDescription: "BlaBla",
+	      designedMaxLength: 255
+      }]
     }]
   }
 };
